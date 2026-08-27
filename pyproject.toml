@@ -39,10 +39,10 @@ dev = [
 ]
 
 [project.scripts]
-rag-agent = "rag_agent.main:app"
+rag-agent = "my_agent.main:app"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/rag_agent"]
+packages = ["src/my_agent"]
 
 
 [tool.ruff]
@@ -70,4 +70,4 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=src/rag_agent --cov-report=term-missing"
+addopts = "-v --cov=src/my_agent --cov-report=term-missing"

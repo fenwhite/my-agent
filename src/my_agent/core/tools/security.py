@@ -146,7 +146,7 @@ class FileSecurityChecker:
         Returns:
             (是否允许, 原因/提示信息)
         """
-        from rag_agent.core.orchestra.registry import AgentRegistry
+        from my_agent.core.orchestra.registry import AgentRegistry
         
         registry = AgentRegistry.get_instance()
         agent = registry.get_agent(agent_name)

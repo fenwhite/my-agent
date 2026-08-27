@@ -65,7 +65,7 @@ class JsonChatStorage(ChatStorageInterface):
             except Exception as e:
                 logger.error(f"清空会话失败 {e}")
 
-    def export_turn_full_propmt(self, session_id: str, turn_index: int) -> dict[str, Any] | None:
+    def export_turn_full_prompt(self, session_id: str, turn_index: int) -> dict[str, Any] | None:
         session_data = self.load_session(session_id)
         if not session_data:
             return None
