@@ -219,3 +219,5 @@ __marimo__/
 
 # my config
 .vscode/
+logs/
+.env
