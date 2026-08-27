@@ -1,49 +1,69 @@
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings, SettingConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    """Application configuration loaded from environment variables."""
 
-    model_config = SettingConfigDict(
+    model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
 
-    app_name: str = "RAG Agent"
+    # Application
+    app_name: str = "My Agent"
     debug: bool = False
     log_level: str = "INFO"
-    log_file: str = ""
-    log_file_max_bytes: int = 10 * 1024 * 1024
-    log_file_backup_count: int = 5
+    log_file: str = ""  # Empty means console only; set path to enable file logging
+    log_file_max_bytes: int = 10 * 1024 * 1024  # 10MB per file
+    log_file_backup_count: int = 5  # Keep 5 rotated files
 
-    api_key: str = ""
-    base_url: str = ""
-    default_model: str = ""
-    qps_limit: int = 20
-    timeout: float = 60.0
+    # IdeaLab LLM Configuration
+    idealab_api_key: str = ""
+    idealab_base_url: str = ""
+    idealab_default_model: str = ""
+    idealab_qps_limit: int = 20
+    idealab_timeout: float = 60.0
 
-    tts_enable: bool = False
-    tts_voice: str = "zh-CN-XiaoXiaoNeural"
+    # Vector Store
+    vector_store_path: str = "./data/vector_store"
+
+    # Retrieval
+    chunk_size: int = 500
+    chunk_overlap: int = 50
+    top_k: int = 5
+
+    # TTS Configuration
+    tts_enabled: bool = False
+    tts_voice: str = "zh-CN-XiaoxiaoNeural"
     tts_timeout: float = 10.0
-    tts_max_length: int = 800
 
+    # Chat Configuration
     chat_max_turns: int = 20
-    chat_context_window: int = 10
 
+    # Prompt Configuration
+    prompt_dir: str = "./prompts"
+    default_prompt: str = "rem"
+
+    # Tool System Configuration
     tool_file_whitelist: list[str] = [
-        "./"
+        "./",
     ]
+    enable_tools: bool = True
+    
+    # Orchestra Configuration
+    orchestra_log_dir: str = "./logs/orchestra"
+    orchestra_max_retries: int = 3
 
     # Toolbox Configuration
-    tool_temp_file_ttl_hours: int = 24
-    tool_inline_max_lines: int = 100
-    tool_page_size: int = 50
-    tool_temp_file_ttl_hours: int = 24
+    tool_inline_max_lines: int = 100     # 内联返回最大行数
     tool_allowed_extensions: list[str] = [
-        ".py", ".json", ".md", ".txt"
+        ".py", ".json", ".toml", ".yaml", ".yml", ".md", ".txt"
     ]
+
 
 @lru_cache
 def get_settings() -> Settings:
+    """Get cached application settings."""
     return Settings()

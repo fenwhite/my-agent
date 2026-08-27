@@ -5,6 +5,7 @@ from typing import Any, Sequence
 
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 
+from my_agent.common.exceptions import PlannerError
 from my_agent.core.orchestra.registry import AgentRegistry
 from my_agent.core.services.prompt_registry import PromptRegistry
 from my_agent.infrastructure.llm.sync_client import SyncLLMClient
@@ -12,8 +13,6 @@ from my_agent.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-class PlannerError(Exception):
-    pass
 
 class Planner:
     def __init__(self, llm_client: SyncLLMClient) -> None:
@@ -21,7 +20,7 @@ class Planner:
         self._agent_registry = AgentRegistry.get_instance()
         self._prompt_registry = PromptRegistry.get_instance()
 
-    def plan(self, user_input: str, context: dict[str, Any]) -> Sequence[dict[str, Any]]:
+    def plan(self, user_input: str) -> list[dict[str, Any]]:
         agent_map = self._build_agent_map()
         if not agent_map:
             raise PlannerError("no agent map, can not do plan")
@@ -36,7 +35,7 @@ class Planner:
 
         logger.info("Planner will invoke LLM to generate mission DAG ...")
 
-        response = self._llm_client.char_completion(messages, temperature=0.1)
+        response = self._llm_client.chat_completion(messages, temperature=0.1)
         content = self._llm_client.get_response_content(response)
 
         if not content:
@@ -110,7 +109,7 @@ class Planner:
         if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
             json_str = text[start_idx:end_idx + 1]
             try:
-                return json.load(json_str)
+                return json.loads(json_str)
             except json.JSONDecodeError as e:
                 raise PlannerError(f"DAG parse fail\n original text {content[:200]}")
 
@@ -149,7 +148,7 @@ class Planner:
         for task in tasks:
             for dep in task["depends_on"]:
                 if dep not in task_ids:
-                    raise PlannerError(f"mission '{task_id}' depend on {dep} is not available")
+                    raise PlannerError(f"mission '{task['task_id']}' depend on {dep} is not available")
 
 
     def _detect_cycle(self, tasks: list[dict[str, Any]], task_ids: set[str]) -> None:

@@ -29,3 +29,12 @@ class ServiceFactory:
         llm_client = ServiceFactory.get_llm_client()
 
         return QueryService(llm_client=llm_client)
+
+    @staticmethod
+    def get_orchestrator():
+        """获取编排器实例。"""
+        from rag_agent.core.orchestra.orchestrator import Orchestrator
+        
+        llm_client = ServiceFactory.get_llm_client()
+        
+        return Orchestrator(llm_client=llm_client)

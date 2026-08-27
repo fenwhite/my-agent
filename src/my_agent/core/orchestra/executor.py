@@ -16,7 +16,7 @@ class Executor:
 
     def __init__(self, tool_exrcutor: ToolExecutor) -> None:
         self.tool_executor = tool_exrcutor
-        self.agent_registry = AgentRegistry.get_instance()
+        self._agent_registry = AgentRegistry.get_instance()
 
     async def execute(self, task: TaskNode, blackboard: Blackboard) -> AgentExecutingLog:
         task_id = task.task_id
@@ -28,7 +28,7 @@ class Executor:
         task.status = "RUNNING"
         task.started_at = started_at
 
-        agent = self.agent_registry.get_agent(agent_name)
+        agent = self._agent_registry.get_agent(agent_name)
         if not agent:
             error_msg = f"Agent '{agent_name}' not found."
             logger.error(error_msg)
@@ -89,7 +89,7 @@ class Executor:
 
 
     def _filter_inputs(self, task: TaskNode, blackboard: Blackboard) -> dict[str, Any]:
-        agent = self._registry.get_agent(task.agent)
+        agent = self._agent_registry.get_agent(task.agent)
 
         inputs: dict[str, Any] = {}
         capability = agent.capability
@@ -116,7 +116,7 @@ class Executor:
         if not isinstance(outputs, dict):
             return
 
-        agent = self._registry.get_agent(agent_name)
+        agent = self._agent_registry.get_agent(agent_name)
         outputs_keys = agent.capability.output_keys if agent else []
 
         for key, value in outputs.items():

@@ -24,6 +24,7 @@ class SubAgent:
 
     @property
     def capability(self) -> AgentCapability:
+        """获取 Agent 能力声明。"""
         return self._capability
 
     async def execute(self, inputs: dict[str, Any]) -> dict[str, Any]:

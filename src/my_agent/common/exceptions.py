@@ -21,3 +21,7 @@ class CommandNotFoundError(ToolError):
 
 class ParameterValidationError(ToolError):
     pass
+
+
+class PlannerError(Exception):
+    pass
