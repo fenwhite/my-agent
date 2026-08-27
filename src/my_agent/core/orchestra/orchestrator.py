@@ -6,11 +6,12 @@ from datetime import datetime
 from typing import Any
 
 from my_agent.config.settings import get_settings
+from my_agent.infrastructure.repositories.chat_storage import ChatStorageInterface
 from my_agent.core.orchestra.blackboard import Blackboard
 from my_agent.core.orchestra.executor import Executor
 from my_agent.core.orchestra.planner import Planner, PlannerError
 from my_agent.core.orchestra.scheduler import ScheduleResult, Scheduler
-from my_agent.core.orchestra.state import OrchestraState, TaskNode
+from my_agent.core.orchestra.state import AgentExecutingLog, OrchestraState, TaskNode
 from my_agent.core.tools.executor import ToolExecutor
 from my_agent.infrastructure.llm.sync_client import SyncLLMClient
 from my_agent.infrastructure.repositories.orchestra_log_storage import OrchestraLogStorage
@@ -48,15 +49,20 @@ class Orchestrator:
         self, 
         llm_client: SyncLLMClient,
         tool_executor: ToolExecutor | None = None,
+        log_storage: ChatStorageInterface | None = None,
     ) -> None:
         """初始化 Orchestrator。
         
         Args:
             llm_client: LLM 客户端
             tool_executor: 工具执行器（可选，默认创建）
+            log_storage: 执行日志存储（可选，默认创建 OrchestraLogStorage）
         """
         self._llm_client = llm_client
         self._tool_executor = tool_executor or ToolExecutor()
+        self._log_storage = log_storage or OrchestraLogStorage(
+            log_dir=get_settings().orchestra_log_dir
+        )
         
         self._planner = Planner(llm_client)
         self._executor = Executor(self._tool_executor)
@@ -79,9 +85,6 @@ class Orchestrator:
         state = OrchestraState(global_goal=user_request)
         state.blackboard = Blackboard()
         
-        # 初始化日志存储
-        log_storage = OrchestraLogStorage(log_dir=settings.orchestra_log_dir)
-        
         try:
             # 2. Planner 生成 DAG
             tasks = self._planner.plan(user_request)
@@ -96,7 +99,7 @@ class Orchestrator:
             state.finished_at = datetime.now().isoformat()
             
             # 5. 保存执行日志
-            log_storage.save(state)
+            self._log_storage.save_session(state.session_id, self._build_log_data(state))
             
             # 检查是否有任务失败
             has_failed = any(
@@ -120,14 +123,72 @@ class Orchestrator:
         except PlannerError as e:
             logger.error(f"Planner 错误: {e}")
             state.finished_at = datetime.now().isoformat()
-            log_storage.save(state)
+            self._log_storage.save_session(state.session_id, self._build_log_data(state))
             return OrchestraResult(success=False, state=state, error=str(e))
             
         except Exception as e:
             logger.error(f"Orchestrator 执行失败: {e}")
             state.finished_at = datetime.now().isoformat()
-            log_storage.save(state)
+            self._log_storage.save_session(state.session_id, self._build_log_data(state))
             return OrchestraResult(success=False, state=state, error=str(e))
+
+    @staticmethod
+    def _build_log_data(state: OrchestraState) -> dict[str, Any]:
+        """将编排执行状态构建为可序列化的日志数据。
+        
+        Args:
+            state: 编排执行状态
+            
+        Returns:
+            日志数据字典
+        """
+        dag_info: list[dict[str, Any]] = []
+        for task_id, node in state.task_dag.items():
+            dag_info.append({
+                "task_id": node.task_id,
+                "agent": node.agent,
+                "depends_on": node.depends_on,
+                "parameters": node.parameters,
+                "status": node.status,
+                "started_at": node.started_at,
+                "finished_at": node.finished_at,
+            })
+
+        execution_logs: list[dict[str, Any]] = []
+        for log in state.execution_logs:
+            execution_logs.append(Orchestrator._log_to_dict(log))
+
+        return {
+            "session_id": state.session_id,
+            "global_goal": state.global_goal,
+            "created_at": state.create_at,
+            "finished_at": state.finished_at,
+            "task_dag": dag_info,
+            "execution_logs": execution_logs,
+        }
+
+    @staticmethod
+    def _log_to_dict(log: AgentExecutingLog) -> dict[str, Any]:
+        """将 AgentExecutingLog 转为字典。
+        
+        Args:
+            log: 执行日志
+            
+        Returns:
+            字典格式
+        """
+        result: dict[str, Any] = {
+            "task_id": log.task_id,
+            "agent": log.agent,
+            "status": log.status,
+            "inputs": log.inputs,
+            "outputs": log.outputs,
+            "started_at": log.started_at,
+            "finished_at": log.finished_at,
+        }
+        if log.error is not None:
+            result["error"] = log.error
+        return result
 
     def _build_task_dag(
         self, 

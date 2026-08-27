@@ -5,13 +5,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from my_agent.infrastructure.repositories.chat_storage import ChatStorageIterface
+from my_agent.infrastructure.repositories.chat_storage import ChatStorageInterface
 from my_agent.utils.logging import get_logger
 from my_agent.utils.sanitizer import sanitize_arguments
 
 logger = get_logger(__name__)
 
-class JsonChatStorage(ChatStorageIterface):
+class JsonChatStorage(ChatStorageInterface):
     def __init__(self, storage_path: str = "./log/chat"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)

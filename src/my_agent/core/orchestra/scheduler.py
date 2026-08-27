@@ -12,7 +12,7 @@ class ScheduleResult:
     DEADLOCK = "DEADLOCK"
 
 class ScheduleOutput:
-    def __init__(self, result: str, task: TaskNode):
+    def __init__(self, result: str, task: TaskNode | None = None):
         self.result = result
         self.task = task
 
