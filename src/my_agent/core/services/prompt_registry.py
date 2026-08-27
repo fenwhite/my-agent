@@ -51,7 +51,7 @@ class PromptRegistry:
             logger.warn("PromptRegistry 已经初始化")
             return
         
-        self._load_fall_prompts()
+        self._load_fallback_prompts()
 
         external_prompts = self._ensure_prompts_dir(prompts_dir)
 
@@ -126,6 +126,12 @@ class PromptRegistry:
             return self._fallback_prompts[name]
         else:
             raise ValueError(f"Prompt '{name}' 不存在")
+
+    def get_no_raise(self, name: str) -> str: 
+        if name in self._prompts:
+            return self._prompts[name]
+        return ""
+    
         
     @property
     def current_name(self) -> str:
