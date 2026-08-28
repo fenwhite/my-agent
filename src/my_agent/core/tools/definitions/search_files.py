@@ -48,7 +48,7 @@ def create_search_files_tool() -> ToolDefinition:
         name="search_file_names",
         description="根据文件名模式搜索文件。支持通配符(* 和 ?)。适用于快速定位文件位置",
         parameters_schema={
-            "type": object,
+            "type": "object",
             "property": {
                 "pattern": {
                     "type": "string",
