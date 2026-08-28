@@ -51,7 +51,7 @@ class ServiceFactory:
             token_budget=4000,
             waterline_ratio=0.8,
             system_prompt=prompt_registry.get_no_raise("compress"),
-            model_name=settings.ollama_default_model
+            model_name=settings.tokenizer_model
         )
 
         return ChatService(llm_client=llm_client, storage=storage, memory=memory, system_prompt=prompt_registry.get_current())

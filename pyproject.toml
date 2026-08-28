@@ -27,6 +27,7 @@ dependencies = [
     "pygame>=2.5.0",
     "transformers>=4.30.0",
     "torch>=2.0.0",
+    "modelscope>=1.9.0",
 ]
 
 [project.optional-dependencies]

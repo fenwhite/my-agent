@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     ollama_default_model: str = "llama3"
     ollama_timeout: float = 60.0
 
+    # Tokenizer Configuration
+    # 必须是合法的 ModelScope/HuggingFace 模型 ID（不能含 Ollama 风格的冒号 tag）
+    tokenizer_model: str = "Qwen/Qwen2.5-7B-Instruct"
+
     # Vector Store
     vector_store_path: str = "./data/vector_store"
 
