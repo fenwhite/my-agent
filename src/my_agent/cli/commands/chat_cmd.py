@@ -29,7 +29,7 @@ def start():
     signal.signal(signal.SIGINT, singal_handler)
 
     console.print("\n[bold cyan]╓══════════════════════════╖[/bold cyan]")
-    console.print("[bold cyan]║    RAG Agent Chat mode   ║[/bold cyan]")
+    console.print("[bold cyan]║        Agent Chat mode   ║[/bold cyan]")
     console.print("[bold cyan]║                          ║[/bold cyan]")
     console.print("[bold cyan]╙══════════════════════════╜[/bold cyan]")
 

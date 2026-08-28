@@ -12,7 +12,7 @@ from my_agent.utils.sanitizer import sanitize_arguments
 logger = get_logger(__name__)
 
 class JsonChatStorage(ChatStorageInterface):
-    def __init__(self, storage_path: str = "./log/chat"):
+    def __init__(self, storage_path: str = "./logs/chat"):
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

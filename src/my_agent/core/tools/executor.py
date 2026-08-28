@@ -72,8 +72,6 @@ class ToolExecutor:
                     error=f"参数解析失败: {arguments}"
                 )
         
-        logger.info(f"执行工具调用: {tool_name}, 参数: {arguments}")
-        
         # 1. 查找工具定义
         tool_def = self.registry.get_tool(tool_name)
         if not tool_def:
