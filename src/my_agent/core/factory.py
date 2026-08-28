@@ -40,15 +40,18 @@ class ServiceFactory:
     def get_chat_service():
         from my_agent.core.services.chat_service import ChatService
 
+        settings = get_settings()
+
         prompt_registry = ServiceFactory.get_prompt_registry()
 
-        llm_client = ServiceFactory.get_llm_client()
+        llm_client = ServiceFactory.get_ollama_client()
         storage = JsonChatStorage()
         memory = DefaultConversationMemory(
             llm_client=llm_client,
             token_budget=4000,
             waterline_ratio=0.8,
             system_prompt=prompt_registry.get_no_raise("compress"),
+            model_name=settings.ollama_default_model
         )
 
         return ChatService(llm_client=llm_client, storage=storage, memory=memory, system_prompt=prompt_registry.get_current())
