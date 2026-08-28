@@ -35,3 +35,29 @@ def resolve_smart_path(file_path: str) -> Path:
         raise AmbiguousPathError(file_path, candidates)
     
     raise FileNotFoundError(f"文件不存在: {file_path}")
+
+
+def resolve_creation_path(file_path: str) -> Path:
+    """解析文件创建路径，用于创建新文件的场景。
+    
+    与 resolve_smart_path 不同，此函数不要求文件必须存在。
+    
+    优先级：
+    1. 绝对路径
+    2. 相对路径（相对于当前工作目录）
+    
+    Args:
+        file_path: 用户输入的路径字符串
+        
+    Returns:
+        解析后的绝对路径
+    """
+    target = Path(file_path)
+    
+    # 1. 绝对路径
+    if target.is_absolute():
+        return target.resolve()
+    
+    # 2. 相对路径（相对于当前工作目录）
+    relative_path = Path.cwd() / file_path
+    return relative_path.resolve()

@@ -7,7 +7,7 @@ from my_agent.core.tools.hooks import (
     HookRegistry
 )
 
-def initilize_tools():
+def initialize_tools():
     registry = ToolRegistry.get_instance()
 
     from my_agent.core.tools.definitions.write_file import create_write_file_tool
@@ -19,14 +19,14 @@ def initilize_tools():
     from my_agent.core.tools.definitions.search_files import create_search_files_tool
     from my_agent.core.tools.definitions.list_directory import create_list_directory_tool
     
-    registry.registry(create_write_file_tool)
-    registry.registry(create_read_paginated_tool)
+    registry.registry(create_write_file_tool())
+    registry.registry(create_read_paginated_tool())
 
-    registry.registry(create_read_code_window_tool)
-    registry.registry(create_patch_code_window_tool)
-    registry.registry(create_locate_code_tool)
-    registry.registry(create_search_files_tool)
-    registry.registry(create_list_directory_tool)
+    registry.registry(create_read_code_window_tool())
+    registry.registry(create_patch_code_window_tool())
+    registry.registry(create_locate_code_tool())
+    registry.registry(create_search_files_tool())
+    registry.registry(create_list_directory_tool())
 
     hook_registry = HookRegistry.get_instance()
     hook_registry.register_pre_hook(log_tool_call_hook)
@@ -36,4 +36,4 @@ def initilize_tools():
         tool_names=["create_patch_code_window_tool"]
     )
 
-__all__ = ["ToolRegistry", "ToolExecutor", "initilize_tools"]
+__all__ = ["ToolRegistry", "ToolExecutor", "initialize_tools"]

@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import List, Tuple
 
-from my_agent.core.exceptions import FileTooLargeError, SecurityError
+from my_agent.common.exceptions import FileTooLargeError, SecurityError
 from my_agent.config.settings import get_settings
 from my_agent.utils.path_resolver import resolve_smart_path, resolve_creation_path
 
