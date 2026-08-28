@@ -3,7 +3,7 @@ requires = ["hatchling>=1.8.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rag-agent"
+name = "my-agent"
 version = "0.1.0"
 description = "agent"
 readme = "README.md"
@@ -26,7 +26,7 @@ dependencies = [
     "edge-tts>=6.1.0",
     "pygame>=2.5.0",
     "transformers>=4.30.0",
-    "torch">=2.0.0",
+    "torch>=2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -39,7 +39,7 @@ dev = [
 ]
 
 [project.scripts]
-rag-agent = "my_agent.main:app"
+my-agent = "my_agent.main:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/my_agent"]
