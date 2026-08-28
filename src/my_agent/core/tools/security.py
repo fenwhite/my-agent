@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import List, Tuple
 
-from my_agent.core.exceptions import FileTooLargeError, SecurityError
+from my_agent.common.exceptions import FileTooLargeError, SecurityError
 from my_agent.config.settings import get_settings
 from my_agent.utils.path_resolver import resolve_smart_path, resolve_creation_path
 
@@ -146,7 +146,7 @@ class FileSecurityChecker:
         Returns:
             (是否允许, 原因/提示信息)
         """
-        from rag_agent.core.orchestra.registry import AgentRegistry
+        from my_agent.core.orchestra.registry import AgentRegistry
         
         registry = AgentRegistry.get_instance()
         agent = registry.get_agent(agent_name)

@@ -11,7 +11,7 @@ from my_agent.utils.logging import get_logger
 class PaginationManager:
     def __init__(self):
         self.settings = get_settings()
-        self.temp_dir = Path(tempfile.gettempdir()) / "rag_agent_temp"
+        self.temp_dir = Path(tempfile.gettempdir()) / "my_agent_temp"
         self.temp_dir.mkdir(parents=True, exist_ok=True)
         self._source_files = {} # file_id -> source_path
         self._line_count_cache = self._create_line_count_cache()

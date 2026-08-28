@@ -3,7 +3,7 @@ requires = ["hatchling>=1.8.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "rag-agent"
+name = "my-agent"
 version = "0.1.0"
 description = "agent"
 readme = "README.md"
@@ -26,7 +26,8 @@ dependencies = [
     "edge-tts>=6.1.0",
     "pygame>=2.5.0",
     "transformers>=4.30.0",
-    "torch">=2.0.0",
+    "torch>=2.0.0",
+    "modelscope>=1.9.0",
 ]
 
 [project.optional-dependencies]
@@ -39,10 +40,10 @@ dev = [
 ]
 
 [project.scripts]
-rag-agent = "rag_agent.main:app"
+my-agent = "my_agent.main:app"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/rag_agent"]
+packages = ["src/my_agent"]
 
 
 [tool.ruff]
@@ -70,4 +71,4 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=src/rag_agent --cov-report=term-missing"
+addopts = "-v --cov=src/my_agent --cov-report=term-missing"

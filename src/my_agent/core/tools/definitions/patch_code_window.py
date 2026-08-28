@@ -70,7 +70,7 @@ async def patch_code_window_impl(
             "diff_hint": diff_hit,
         }
     
-    temp_dir = Path(tempfile.gettempdir() / "rag_agent_patch")
+    temp_dir = Path(tempfile.gettempdir() / "my_agent_patch")
     temp_dir.mkdir(parents=True, exist_ok=True)
     temp_file = temp_dir / f"patch_{uuid.uuid4().hex[:8]}.tmp"
 

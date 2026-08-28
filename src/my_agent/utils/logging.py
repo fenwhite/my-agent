@@ -17,12 +17,38 @@ def setup_logging() -> None:
     is_development = settings.debug or settings.log_level.upper() == "DEBUG"
     log_level = getattr(logging, settings.log_level.upper(), logging.INFO)
 
+    shared_processors: list[structlog.types.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
+        structlog.processors.StackInfoRenderer(),
+        structlog.dev.set_exc_info,
+        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=False)
+    ]
+
+    if is_development:
+        renderer: structlog.types.Processor = structlog.dev.ConsoleRenderer(
+            colors=True,
+            pad_event=30,
+            sort_keys=True
+        )
+    else:
+        renderer = structlog.processors.JSONRenderer(ensure_ascii=False)
+
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processors=[
+            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+            renderer,
+        ],
+        foreign_pre_chain=shared_processors,
+    )
+
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
     root_logger.handlers.clear()
 
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(log_level)
+    console_handler.setFormatter(formatter)
     root_logger.addHandler(console_handler)
 
     if settings.log_file:
@@ -36,31 +62,17 @@ def setup_logging() -> None:
             encoding="utf-8"
         )
         file_handler.setLevel(log_level)
+        file_handler.setFormatter(formatter)
         root_logger.addHandler(file_handler)
-
-    shared_processors: list[structlog.types.Processor] = [
-        structlog.contextvars.merge_contextvars,
-        structlog.processors.add_log_level,
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_fino,
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%s", utc=False)
-    ]
-
-    if is_development:
-        renderer: structlog.types.Processor = structlog.dev.ConsoleRenderer(
-            colors=True,
-            pad_event=30,
-            sort_keys=True
-        )
-    else:
-        renderer = structlog.processors.JSONRdnderer()
 
     structlog.configure(
         processors=[
             structlog.stdlib.filter_by_level,
             structlog.stdlib.add_logger_name,
             structlog.stdlib.PositionalArgumentsFormatter(),
+            *shared_processors,
             structlog.processors.UnicodeDecoder(),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),

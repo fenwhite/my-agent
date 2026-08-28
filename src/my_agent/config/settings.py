@@ -19,12 +19,23 @@ class Settings(BaseSettings):
     log_file_max_bytes: int = 10 * 1024 * 1024  # 10MB per file
     log_file_backup_count: int = 5  # Keep 5 rotated files
 
-    # IdeaLab LLM Configuration
-    idealab_api_key: str = ""
-    idealab_base_url: str = ""
-    idealab_default_model: str = ""
-    idealab_qps_limit: int = 20
-    idealab_timeout: float = 60.0
+    # LLM Configuration
+    api_key: str = ""
+    base_url: str = ""
+    default_model: str = ""
+    qps_limit: int = 20
+    timeout: float = 60.0
+
+
+    # Ollama LLM Configuration
+    ollama_api_key: str = ""
+    ollama_base_url: str = "http://localhost:11434/v1"
+    ollama_default_model: str = "llama3"
+    ollama_timeout: float = 60.0
+
+    # Tokenizer Configuration
+    # 必须是合法的 ModelScope/HuggingFace 模型 ID（不能含 Ollama 风格的冒号 tag）
+    tokenizer_model: str = "Qwen/Qwen2.5-7B-Instruct"
 
     # Vector Store
     vector_store_path: str = "./data/vector_store"

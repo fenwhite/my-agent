@@ -7,6 +7,7 @@ import time
 import uuid
 from typing import Any, List
 from datetime import datetime
+import traceback
 
 from my_agent.core.services.prompt_registry import PromptRegistry
 from my_agent.infrastructure.repositories.chat_storage import ChatStorageInterface
@@ -111,7 +112,7 @@ class ChatService:
                     messages=context_messages,
                     tools=tools if tools else None
                 )
-                
+
                 ai_content = self._llm_client.get_response_content(response)
                 tool_calls = self._extract_tool_calls(response)
                 
@@ -199,6 +200,7 @@ class ChatService:
                 
             except Exception as e:
                 logger.error(f"LLM 调用失败: {e}")
+                logger.error(f"{traceback.format_exc()}")
                 error_content = f"抱歉，处理您的请求时出现错误：{str(e)}"
                 error_message = {"role": "assistant", "content": error_content}
                 turn_data["added_messages"].append(error_message)
@@ -348,7 +350,6 @@ class ChatService:
                     "total_tool_calls": total_tool_calls,
                 },
             }
-            
             self._storage.save_session(self._session_id, session_data)
         except Exception as e:
             logger.warning(f"保存会话数据失败: {e}")

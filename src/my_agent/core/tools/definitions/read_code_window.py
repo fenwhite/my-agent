@@ -90,7 +90,7 @@ def create_read_code_window_tool() -> ToolDefinition:
         name="read_code_window",
         description="在已知行号(通过 locate_code 获得) 的情况下，读取该行周围的一个狭窄窗口。单次读取的最大跨度不超过 50 行 (例如：靶心上下各读 20 行)。",
         parameters_schema={
-            "type": object,
+            "type": "object",
             "property": {
                 "file_path": {
                     "type": "string",

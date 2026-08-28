@@ -26,10 +26,10 @@ def start():
     global chat_service
     chat_service = ServiceFactory.get_chat_service()
 
-    signal.signal(singal.SIGINT, singal_handler)
+    signal.signal(signal.SIGINT, singal_handler)
 
     console.print("\n[bold cyan]╓══════════════════════════╖[/bold cyan]")
-    console.print("[bold cyan]║    RAG Agent Chat mode   ║[/bold cyan]")
+    console.print("[bold cyan]║        Agent Chat mode   ║[/bold cyan]")
     console.print("[bold cyan]║                          ║[/bold cyan]")
     console.print("[bold cyan]╙══════════════════════════╜[/bold cyan]")
 
@@ -37,10 +37,10 @@ def start():
 
     while not should_exit:
         try:
-            voice_status = "[🔊ON]" if tts_manager.is_enableed else "[🔈OFF]"
+            voice_status = "[🔊ON]" if tts_manager.is_enable else "[🔈OFF]"
             user_input = Prompt.ask(f"{voice_status} >>>")
 
-            if user_input.start_with('/'):
+            if user_input.startswith('/'):
                 cmd_result = handler_command(user_input.strip())
                 if cmd_result == 'exit':
                     should_exit = True
@@ -64,7 +64,7 @@ def start():
                 for tc in result["tool_calls"]:
                     console.print(f"  - {tc['name']}: {tc['arguments']}")
 
-            if tts_manager.is_enableed:
+            if tts_manager.is_enable:
                 tts_manager.speak(result["content"])
 
         except EOFError:

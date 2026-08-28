@@ -33,7 +33,7 @@ class PromptRegistry:
     def __init__(self):
         if PromptRegistry._instance is not None:
             raise RuntimeError("PromptRegistry 是单例，请使用 get_instance 方法")
-        self._prompts: dict[str, str]
+        self._prompts: dict[str, str] = {}
         self._current_name: str = ""
         self._fallback_prompts: dict[str, str] = {}
         self._initialized = False
@@ -48,7 +48,7 @@ class PromptRegistry:
     
     def initialize(self, prompts_dir: Path, default_prompt: str = "rem") -> None:
         if self._initialized:
-            logger.warn("PromptRegistry 已经初始化")
+            logger.warning("PromptRegistry 已经初始化")
             return
         
         self._load_fallback_prompts()
@@ -64,7 +64,7 @@ class PromptRegistry:
         if default_prompt in self._prompts:
             self._current_name = default_prompt
         elif self._fallback_prompts:
-            self._current_name = list(self._fallback_prompts.keys()[0])
+            self._current_name = list(self._fallback_prompts.keys())[0]
             logger.warning(f"默认 prompt '{default_prompt}' 不存在，使用 '{self._current_name}'")
         else:
             raise RuntimeError("没有可用的 prompt")

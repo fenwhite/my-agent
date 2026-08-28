@@ -13,7 +13,7 @@ from my_agent.utils.logging import get_logger
 logger = get_logger(__name__)
 
 
-class TransformersCounter:
+class TransformersCounter(TokenCounter):
     """基于 Transformers Tokenizer 的 Token 计数器。
     
     使用 HuggingFace Transformers 库进行精确的 Token 计数，

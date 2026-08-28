@@ -31,7 +31,7 @@ async def write_file_impl(
 
 
 def create_write_file_tool() -> ToolDefinition:
-    settings = get_settings
+    settings = get_settings()
     return ToolDefinition(
         name="write_file",
         description=f"将内容写入文件。如果文件已存在就会被覆盖。允许的后缀: {settings.tool_allowed_extensions}",

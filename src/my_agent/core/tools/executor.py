@@ -72,8 +72,6 @@ class ToolExecutor:
                     error=f"参数解析失败: {arguments}"
                 )
         
-        logger.info(f"执行工具调用: {tool_name}, 参数: {arguments}")
-        
         # 1. 查找工具定义
         tool_def = self.registry.get_tool(tool_name)
         if not tool_def:
@@ -110,7 +108,7 @@ class ToolExecutor:
             temp_files = []
             if isinstance(result, dict) and "file_id" in result:
                 # 如果返回结果包含 file_id，记录到上下文中供 Hook 清理
-                from rag_agent.core.tools.pagination import get_pagination_manager
+                from my_agent.core.tools.pagination import get_pagination_manager
                 pagination_mgr = get_pagination_manager()
                 file_path = str(pagination_mgr.get_temp_file_path(result["file_id"]))
                 temp_files.append(file_path)

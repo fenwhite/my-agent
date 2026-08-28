@@ -18,7 +18,7 @@ from my_agent.utils.logging import get_logger
 logger = get_logger(__name__)
 
 
-class LLMIncrementalCompression:
+class LLMIncrementalCompression(CompressionStrategy):
     """基于 LLM 的增量压缩策略。
     
     使用 LLM 将旧摘要和新消息合并为新的精简摘要，

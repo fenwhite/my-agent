@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from my_agent.infrastructure.llm.sync_client import SyncLLMClient
+from my_agent.infrastructure.llm.sync_protocols import SyncLLMClientProtocol
 from my_agent.infrastructure.memory.interfaces import (
     CompressionStrategy,
     ConversationMemory,
@@ -46,7 +46,7 @@ class DefaultConversationMemory:
     
     def __init__(
         self,
-        llm_client: SyncLLMClient,
+        llm_client: SyncLLMClientProtocol,
         token_budget: int = 4000,
         waterline_ratio: float = 0.8,
         system_prompt: str = "",
@@ -68,8 +68,8 @@ class DefaultConversationMemory:
             和 Tool Response 分布在不同的 LLM 调用中），需要增强保护逻辑，
             确保滑动窗口不会切断未完成的调用链。
         """
-        self.token_counter = TransformersCounter(model_name=model_name)
-        self.compression_strategy = LLMIncrementalCompression(llm_client)
+        self.token_counter: TokenCounter = TransformersCounter(model_name=model_name)
+        self.compression_strategy: CompressionStrategy = LLMIncrementalCompression(llm_client)
         self.pruning_strategy = RuleBasedPruning()
         
         self.token_budget = token_budget

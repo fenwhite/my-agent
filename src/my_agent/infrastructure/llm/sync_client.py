@@ -7,12 +7,12 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletion
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 
-from my_agent.config.settings import get_settings
+from my_agent.infrastructure.llm.sync_protocols import SyncLLMClientProtocol
 from my_agent.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-class SyncLLMClient:
+class SyncLLMClient(SyncLLMClientProtocol):
     def __init__(self,
                  api_key: str,
                  base_url: str,

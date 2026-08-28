@@ -51,7 +51,7 @@ def create_list_directory_tool() -> ToolDefinition:
         name="list_directory",
         description="列出指定目录的直接子项(文件和子目录)。适用于探索项目结构。仅返回直接子项，不递归",
         parameters_schema={
-            "type": object,
+            "type": "object",
             "property": {
                 "dir_path": {
                     "type": "string",
