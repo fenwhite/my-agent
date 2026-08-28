@@ -42,7 +42,7 @@ def setup_logging() -> None:
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_fino,
+        structlog.dev.set_exc_info,
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%s", utc=False)
     ]
 
@@ -53,7 +53,7 @@ def setup_logging() -> None:
             sort_keys=True
         )
     else:
-        renderer = structlog.processors.JSONRdnderer()
+        renderer = structlog.processors.JSONRenderer()
 
     structlog.configure(
         processors=[

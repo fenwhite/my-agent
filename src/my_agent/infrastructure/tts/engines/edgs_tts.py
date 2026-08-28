@@ -1,6 +1,6 @@
 import asyncio
 
-import edgs_tts
+import edge_tts
 
 from my_agent.config.settings import get_settings
 from my_agent.infrastructure.tts.protocols import TTSEngineProtocol
@@ -19,7 +19,7 @@ class EdgeTTSEngine(TTSEngineProtocol):
     
     async def synthesize(self, text: str) -> bytes:
         try:
-            communicate = edge_tts.Communicate(text, voice)
+            communicate = edge_tts.Communicate(text, self._voice)
             audio_chunks = []
 
             async def _stream_with_timeout():
@@ -27,7 +27,7 @@ class EdgeTTSEngine(TTSEngineProtocol):
                     if chunk["type"] == "audio":
                         audio_chunks.append(chunk["data"])
 
-            await asyncio.wait_for(_stream_with_timeout(), timeout=timeout)
+            await asyncio.wait_for(_stream_with_timeout(), timeout=self._timeout)
             return b"".join(audio_chunks)
         
         except asyncio.TimeoutError:
