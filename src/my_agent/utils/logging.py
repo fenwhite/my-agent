@@ -32,7 +32,7 @@ def setup_logging() -> None:
             sort_keys=True
         )
     else:
-        renderer = structlog.processors.JSONRenderer()
+        renderer = structlog.processors.JSONRenderer(ensure_ascii=False)
 
     formatter = structlog.stdlib.ProcessorFormatter(
         processors=[
